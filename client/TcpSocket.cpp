@@ -17,7 +17,6 @@ TcpSocket::TcpSocket()
 {
 }
 
-
 TcpSocket::TcpSocket(int connfd)
 {
 	m_socket = connfd;
@@ -27,7 +26,7 @@ TcpSocket::~TcpSocket()
 {
 }
 
-int TcpSocket::connectToHost(char * ip, unsigned short port, int timeout)
+int TcpSocket::connectToHost(char *ip, unsigned short port, int timeout)
 {
 	int ret = 0;
 	if (ip == NULL || port <= 0 || port > 65535 || timeout < 0)
@@ -51,7 +50,7 @@ int TcpSocket::connectToHost(char * ip, unsigned short port, int timeout)
 	servaddr.sin_port = htons(port);
 	servaddr.sin_addr.s_addr = inet_addr(ip);
 
-	ret = connectTimeout((struct sockaddr_in*) (&servaddr), (unsigned int)timeout);
+	ret = connectTimeout((struct sockaddr_in *)(&servaddr), (unsigned int)timeout);
 	if (ret < 0)
 	{
 		if (ret == -1 && errno == ETIMEDOUT)
@@ -61,7 +60,7 @@ int TcpSocket::connectToHost(char * ip, unsigned short port, int timeout)
 		}
 		else
 		{
-			//printf("func connect_timeout() err:  %d\n", ret);
+			// printf("func connect_timeout() err:  %d\n", ret);
 			m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func connect_timeout() err");
 		}
 	}
@@ -69,9 +68,9 @@ int TcpSocket::connectToHost(char * ip, unsigned short port, int timeout)
 	return ret;
 }
 
-int TcpSocket::sendMsg(char * sendData, int dataLen, int timeout)
+int TcpSocket::sendMsg(char *sendData, int dataLen, int timeout)
 {
-	int 	ret = 0;
+	int ret = 0;
 
 	if (sendData == NULL || dataLen <= 0)
 	{
@@ -106,7 +105,7 @@ int TcpSocket::sendMsg(char * sendData, int dataLen, int timeout)
 			return writed;
 		}
 
-		if (netdata != NULL)  //wangbaoming 20150630 modify bug
+		if (netdata != NULL) // wangbaoming 20150630 modify bug
 		{
 			free(netdata);
 			netdata = NULL;
@@ -115,7 +114,7 @@ int TcpSocket::sendMsg(char * sendData, int dataLen, int timeout)
 
 	if (ret < 0)
 	{
-		//失败返回-1，超时返回-1并且errno = ETIMEDOUT
+		// 失败返回-1，超时返回-1并且errno = ETIMEDOUT
 		if (ret == -1 && errno == ETIMEDOUT)
 		{
 			ret = TimeoutError;
@@ -128,9 +127,9 @@ int TcpSocket::sendMsg(char * sendData, int dataLen, int timeout)
 	return ret;
 }
 
-int TcpSocket::recvMsg(char ** recvData, int & recvLen, int timeout)
+int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 {
-	int		ret = 0;
+	int ret = 0;
 
 	if (recvData == NULL)
 	{
@@ -139,7 +138,7 @@ int TcpSocket::recvMsg(char ** recvData, int & recvLen, int timeout)
 		return ret;
 	}
 
-	ret = readTimeout(timeout); //bugs modify bombing
+	ret = readTimeout(timeout); // bugs modify bombing
 	if (ret != 0)
 	{
 		if (ret == -1 || errno == ETIMEDOUT)
@@ -156,24 +155,24 @@ int TcpSocket::recvMsg(char ** recvData, int & recvLen, int timeout)
 	}
 
 	int netdatalen = 0;
-	ret = readn(&netdatalen, 4); //读包头 4个字节
+	ret = readn(&netdatalen, 4); // 读包头 4个字节
 	if (ret == -1)
 	{
-		//printf("func readn() err:%d \n", ret);
+		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err");
 		return ret;
 	}
 	else if (ret < 4)
 	{
 		ret = PeerCloseError;
-		//printf("func readn() err peer closed:%d \n", ret);
+		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err, peer closed");
 		return ret;
 	}
 
 	int n;
 	n = ntohl(netdatalen);
-	char* tmpBuf = (char *)malloc(n + 1);
+	char *tmpBuf = (char *)malloc(n + 1);
 	if (tmpBuf == NULL)
 	{
 		ret = MallocError;
@@ -181,25 +180,24 @@ int TcpSocket::recvMsg(char ** recvData, int & recvLen, int timeout)
 		return ret;
 	}
 
-
-	ret = readn(tmpBuf, n); //根据长度读数据
+	ret = readn(tmpBuf, n); // 根据长度读数据
 	if (ret == -1)
 	{
-		//printf("func readn() err:%d \n", ret);
+		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "readn() err");
 		return ret;
 	}
 	else if (ret < n)
 	{
 		ret = PeerCloseError;
-		//printf("func readn() err peer closed:%d \n", ret);
+		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err,  peer closed");
 		return ret;
 	}
 
 	*recvData = tmpBuf;
 	recvLen = n;
-	tmpBuf[n] = '\0'; //多分配一个字节内容，兼容可见字符串 字符串的真实长度仍然为n
+	tmpBuf[n] = '\0'; // 多分配一个字节内容，兼容可见字符串 字符串的真实长度仍然为n
 
 	return 0;
 }
@@ -212,7 +210,7 @@ void TcpSocket::disConnect()
 	}
 }
 
-void TcpSocket::freeMemory(char ** buf)
+void TcpSocket::freeMemory(char **buf)
 {
 	if (*buf != NULL)
 	{
@@ -225,9 +223,9 @@ void TcpSocket::freeMemory(char ** buf)
 //////             子函数                   //////
 /////////////////////////////////////////////////
 /*
-* blockIO - 设置I/O为非阻塞模式
-* @fd: 文件描符符
-*/
+ * blockIO - 设置I/O为非阻塞模式
+ * @fd: 文件描符符
+ */
 int TcpSocket::blockIO(int fd)
 {
 	int ret = 0;
@@ -250,9 +248,9 @@ int TcpSocket::blockIO(int fd)
 }
 
 /*
-* noBlockIO - 设置I/O为阻塞模式
-* @fd: 文件描符符
-*/
+ * noBlockIO - 设置I/O为阻塞模式
+ * @fd: 文件描符符
+ */
 int TcpSocket::noBlockIO(int fd)
 {
 	int ret = 0;
@@ -275,10 +273,10 @@ int TcpSocket::noBlockIO(int fd)
 }
 
 /*
-* readTimeout - 读超时检测函数，不含读操作
-* @wait_seconds: 等待超时秒数，如果为0表示不检测超时
-* 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
-*/
+ * readTimeout - 读超时检测函数，不含读操作
+ * @wait_seconds: 等待超时秒数，如果为0表示不检测超时
+ * 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
+ */
 int TcpSocket::readTimeout(unsigned int wait_seconds)
 {
 	int ret = 0;
@@ -293,11 +291,11 @@ int TcpSocket::readTimeout(unsigned int wait_seconds)
 		timeout.tv_sec = wait_seconds;
 		timeout.tv_usec = 0;
 
-		//select返回值三态
-		//1 若timeout时间到（超时），没有检测到读事件 ret返回=0
-		//2 若ret返回<0 &&  errno == EINTR 说明select的过程中被别的信号中断（可中断睡眠原理）
-		//2-1 若返回-1，select出错
-		//3 若ret返回值>0 表示有read事件发生，返回事件发生的个数
+		// select返回值三态
+		// 1 若timeout时间到（超时），没有检测到读事件 ret返回=0
+		// 2 若ret返回<0 &&  errno == EINTR 说明select的过程中被别的信号中断（可中断睡眠原理）
+		// 2-1 若返回-1，select出错
+		// 3 若ret返回值>0 表示有read事件发生，返回事件发生的个数
 
 		do
 		{
@@ -318,10 +316,10 @@ int TcpSocket::readTimeout(unsigned int wait_seconds)
 }
 
 /*
-* writeTimeout - 写超时检测函数，不含写操作
-* @wait_seconds: 等待超时秒数，如果为0表示不检测超时
-* 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
-*/
+ * writeTimeout - 写超时检测函数，不含写操作
+ * @wait_seconds: 等待超时秒数，如果为0表示不检测超时
+ * 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
+ */
 int TcpSocket::writeTimeout(unsigned int wait_seconds)
 {
 	int ret = 0;
@@ -353,11 +351,11 @@ int TcpSocket::writeTimeout(unsigned int wait_seconds)
 }
 
 /*
-* connectTimeout - connect
-* @addr: 要连接的对方地址
-* @wait_seconds: 等待超时秒数，如果为0表示正常模式
-* 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
-*/
+ * connectTimeout - connect
+ * @addr: 要连接的对方地址
+ * @wait_seconds: 等待超时秒数，如果为0表示正常模式
+ * 成功（未超时）返回0，失败返回-1，超时返回-1并且errno = ETIMEDOUT
+ */
 int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 {
 	int ret;
@@ -366,10 +364,10 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 	if (wait_seconds > 0)
 		blockIO(m_socket);
 
-	ret = connect(m_socket, (struct sockaddr*)addr, addrlen);
+	ret = connect(m_socket, (struct sockaddr *)addr, addrlen);
 	if (ret < 0 && errno == EINPROGRESS)
 	{
-		//printf("11111111111111111111\n");
+		// printf("11111111111111111111\n");
 		fd_set connect_fdset;
 		struct timeval timeout;
 		FD_ZERO(&connect_fdset);
@@ -390,7 +388,7 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			return -1;
 		else if (ret == 1)
 		{
-			//printf("22222222222222222\n");
+			// printf("22222222222222222\n");
 			/* ret返回为1（表示套接字可写），可能有两种情况，一种是连接建立成功，一种是套接字产生错误，*/
 			/* 此时错误信息不会保存至errno变量中，因此，需要调用getsockopt来获取。 */
 			int err;
@@ -402,12 +400,12 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			}
 			if (err == 0)
 			{
-				//printf("3333333333333\n");
+				// printf("3333333333333\n");
 				ret = 0;
 			}
 			else
 			{
-				//printf("4444444444444444:%d\n", err);
+				// printf("4444444444444444:%d\n", err);
 				errno = err;
 				ret = -1;
 			}
@@ -421,17 +419,17 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 }
 
 /*
-* readn - 读取固定字节数
-* @fd: 文件描述符
-* @buf: 接收缓冲区
-* @count: 要读取的字节数
-* 成功返回count，失败返回-1，读到EOF返回<count
-*/
+ * readn - 读取固定字节数
+ * @fd: 文件描述符
+ * @buf: 接收缓冲区
+ * @count: 要读取的字节数
+ * 成功返回count，失败返回-1，读到EOF返回<count
+ */
 int TcpSocket::readn(void *buf, int count)
 {
 	size_t nleft = count;
 	ssize_t nread;
-	char *bufp = (char*)buf;
+	char *bufp = (char *)buf;
 
 	while (nleft > 0)
 	{
@@ -452,16 +450,16 @@ int TcpSocket::readn(void *buf, int count)
 }
 
 /*
-* writen - 发送固定字节数
-* @buf: 发送缓冲区
-* @count: 要读取的字节数
-* 成功返回count，失败返回-1
-*/
+ * writen - 发送固定字节数
+ * @buf: 发送缓冲区
+ * @count: 要读取的字节数
+ * 成功返回count，失败返回-1
+ */
 int TcpSocket::writen(const void *buf, int count)
 {
 	size_t nleft = count;
 	ssize_t nwritten;
-	char *bufp = (char*)buf;
+	char *bufp = (char *)buf;
 
 	while (nleft > 0)
 	{

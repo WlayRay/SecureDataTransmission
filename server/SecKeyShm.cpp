@@ -7,19 +7,17 @@ SecKeyShm::SecKeyShm(int key) : ShareMemory(key)
 {
 }
 
-SecKeyShm::SecKeyShm(int key, int maxNode) 
-	: ShareMemory(key, maxNode * sizeof(NodeSHMInfo))
-	, m_maxNode(maxNode)
+SecKeyShm::SecKeyShm(int key, int maxNode)
+	: ShareMemory(key, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode)
 {
 }
 
-SecKeyShm::SecKeyShm(const char * pathName) : ShareMemory(pathName)
+SecKeyShm::SecKeyShm(const char *pathName) : ShareMemory(pathName)
 {
 }
 
-SecKeyShm::SecKeyShm(const char * pathName, int maxNode) 
-	: ShareMemory(pathName, maxNode * sizeof(NodeSHMInfo))
-	, m_maxNode(maxNode)
+SecKeyShm::SecKeyShm(const char *pathName, int maxNode)
+	: ShareMemory(pathName, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode)
 {
 }
 
@@ -27,18 +25,18 @@ SecKeyShm::~SecKeyShm()
 {
 }
 
-int SecKeyShm::shmWrite(NodeSHMInfo * pNodeInfo)
+int SecKeyShm::shmWrite(NodeSHMInfo *pNodeInfo)
 {
 	int ret = -1;
 	// 关联共享内存
-	NodeSHMInfo* pAddr = static_cast<NodeSHMInfo*>(mapShm());
+	NodeSHMInfo *pAddr = static_cast<NodeSHMInfo *>(mapShm());
 	if (pAddr == NULL)
 	{
 		return ret;
 	}
 
 	// 判断传入的网点密钥是否已经存在
-	NodeSHMInfo	*pNode = NULL;
+	NodeSHMInfo *pNode = NULL;
 	for (int i = 0; i < m_maxNode; i++)
 	{
 		// pNode依次指向每个节点的首地址
@@ -55,7 +53,7 @@ int SecKeyShm::shmWrite(NodeSHMInfo * pNodeInfo)
 
 	// 若没有找到对应的信息, 找一个空节点将秘钥信息写入
 	int i = 0;
-	NodeSHMInfo  tmpNodeInfo; //空结点
+	NodeSHMInfo tmpNodeInfo; // 空结点
 	memset(&tmpNodeInfo, 0, sizeof(NodeSHMInfo));
 	for (i = 0; i < m_maxNode; i++)
 	{
@@ -76,20 +74,20 @@ int SecKeyShm::shmWrite(NodeSHMInfo * pNodeInfo)
 	return ret;
 }
 
-int SecKeyShm::shmRead(const char * clientID, const char * serverID, NodeSHMInfo * pNodeInfo)
+int SecKeyShm::shmRead(const char *clientID, const char *serverID, NodeSHMInfo *pNodeInfo)
 {
 	int ret = 0;
 	// 关联共享内存
 	NodeSHMInfo *pAddr = NULL;
-	pAddr = static_cast<NodeSHMInfo*>(mapShm());
+	pAddr = static_cast<NodeSHMInfo *>(mapShm());
 	if (pAddr == NULL)
 	{
 		return -1;
 	}
 
-	//遍历网点信息
+	// 遍历网点信息
 	int i = 0;
-	NodeSHMInfo	*pNode = NULL;
+	NodeSHMInfo *pNode = NULL;
 	// 通过clientID和serverID查找节点
 	for (i = 0; i < m_maxNode; i++)
 	{

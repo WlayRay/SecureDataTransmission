@@ -6,7 +6,7 @@ RespondCodec::RespondCodec()
 {
 }
 
-RespondCodec::RespondCodec(RespondMsg * msg)
+RespondCodec::RespondCodec(RespondMsg *msg)
 {
 	memcpy(&m_msg, msg, sizeof(RespondMsg));
 }
@@ -15,7 +15,7 @@ RespondCodec::~RespondCodec()
 {
 }
 
-int RespondCodec::msgEncode(char ** outData, int & len)
+int RespondCodec::msgEncode(char **outData, int &len)
 {
 	writeHeadNode(m_msg.rv);
 	writeNextNode(m_msg.clientId, strlen(m_msg.clientId) + 1);
@@ -27,7 +27,7 @@ int RespondCodec::msgEncode(char ** outData, int & len)
 	return 0;
 }
 
-void * RespondCodec::msgDecode(char * inData, int inLen)
+void *RespondCodec::msgDecode(char *inData, int inLen)
 {
 	unpackSequence(inData, inLen);
 	readHeadNode(m_msg.rv);

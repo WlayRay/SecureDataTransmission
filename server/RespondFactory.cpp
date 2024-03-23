@@ -11,14 +11,13 @@ RespondFactory::RespondFactory(RespondMsg *msg)
 	m_respond = msg;
 }
 
-
 RespondFactory::~RespondFactory()
 {
 }
 
-Codec * RespondFactory::createCodec()
+Codec *RespondFactory::createCodec()
 {
-	Codec* codec = NULL;
+	Codec *codec = NULL;
 	if (m_flag)
 	{
 		codec = new RespondCodec(m_respond);

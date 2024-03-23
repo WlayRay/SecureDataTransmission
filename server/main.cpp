@@ -13,8 +13,8 @@ void createDeamon();
 
 int main()
 {
-	//createDeamon();
-    // 启动服务器
+	// createDeamon();
+	//  启动服务器
 	ServerInfo info;
 	info.maxnode = 20;
 	info.sPort = 9898;
@@ -25,7 +25,7 @@ int main()
 
 	cout << "good bye..." << endl;
 
-    return 0;
+	return 0;
 }
 
 void createDeamon()

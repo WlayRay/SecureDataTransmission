@@ -24,12 +24,12 @@ int main()
 	info.shmKey = 0x12345678;
 	ClientOperation client(&info);
 
-	//enum CmdType{NewOrUpdate=1, Check, Revoke, View};
+	// enum CmdType{NewOrUpdate=1, Check, Revoke, View};
 	int nSel;
 	while (1)
 	{
 		nSel = usage();
-		switch(nSel)
+		switch (nSel)
 		{
 		case RequestCodec::NewOrUpdate:
 			client.secKeyAgree();
@@ -45,12 +45,12 @@ int main()
 			client.secKeyView();
 			break;
 		case 0:
-		     exit(0);
+			exit(0);
 
 		default:
 			break;
 		}
-	}	
+	}
 }
 
 int usage()
@@ -68,7 +68,8 @@ int usage()
 	printf("\n\n  选择:");
 
 	scanf("%d", &nSel);
-	while (getchar() != '\n');
+	while (getchar() != '\n')
+		;
 
 	return nSel;
 }

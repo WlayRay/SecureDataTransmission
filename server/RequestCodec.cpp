@@ -8,7 +8,7 @@ RequestCodec::RequestCodec() : Codec()
 {
 }
 
-RequestCodec::RequestCodec(RequestMsg* msg) : Codec()
+RequestCodec::RequestCodec(RequestMsg *msg) : Codec()
 {
 	m_msg.cmdType = msg->cmdType;
 	strcpy(m_msg.clientId, msg->clientId);
@@ -22,7 +22,7 @@ RequestCodec::~RequestCodec()
 	cout << "RequestCodec destruct ..." << endl;
 }
 
-int RequestCodec::msgEncode(char** outData, int &len)
+int RequestCodec::msgEncode(char **outData, int &len)
 {
 	writeHeadNode(m_msg.cmdType);
 	writeNextNode(m_msg.clientId, strlen(m_msg.clientId) + 1);
@@ -34,9 +34,9 @@ int RequestCodec::msgEncode(char** outData, int &len)
 	return 0;
 }
 
-void* RequestCodec::msgDecode(char * inData, int inLen)
+void *RequestCodec::msgDecode(char *inData, int inLen)
 {
-	unpackSequence((char*)inData, inLen);
+	unpackSequence((char *)inData, inLen);
 	readHeadNode(m_msg.cmdType);
 	readNextNode(m_msg.clientId);
 	readNextNode(m_msg.authCode);

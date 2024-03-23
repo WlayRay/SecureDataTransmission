@@ -2,18 +2,16 @@
 #include "CodecFactory.h"
 #include "RequestCodec.h"
 
-class RequestFactory :
-	public CodecFactory
+class RequestFactory : public CodecFactory
 {
 public:
 	RequestFactory();
-	RequestFactory(RequestMsg* msg);
+	RequestFactory(RequestMsg *msg);
 	~RequestFactory();
 
-	Codec* createCodec();
+	Codec *createCodec();
 
 private:
 	bool m_flag = false;
-	RequestMsg * m_request;
+	RequestMsg *m_request;
 };
-

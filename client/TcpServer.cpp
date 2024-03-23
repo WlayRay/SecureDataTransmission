@@ -9,20 +9,18 @@ TcpServer::TcpServer()
 {
 }
 
-
 TcpServer::~TcpServer()
 {
 }
 
 int TcpServer::setListen(unsigned short port)
 {
-	int 	ret = 0;
+	int ret = 0;
 	struct sockaddr_in servaddr;
 	memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(port);
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
 
 	m_lfd = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_lfd < 0)
@@ -31,7 +29,6 @@ int TcpServer::setListen(unsigned short port)
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func socket() err");
 		return ret;
 	}
-
 
 	int on = 1;
 	ret = setsockopt(m_lfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
@@ -42,8 +39,7 @@ int TcpServer::setListen(unsigned short port)
 		return ret;
 	}
 
-
-	ret = bind(m_lfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+	ret = bind(m_lfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 	if (ret < 0)
 	{
 		ret = errno;
@@ -62,14 +58,14 @@ int TcpServer::setListen(unsigned short port)
 	return ret;
 }
 
-TcpSocket* TcpServer::acceptConn(int timeout)
+TcpSocket *TcpServer::acceptConn(int timeout)
 {
 	int connfd = acceptTimeout(timeout);
 	if (connfd < 0)
 	{
 		if (connfd == -1 && errno == ETIMEDOUT)
 		{
-			//printf("func accept_timeout() timeout err:%d \n", ret);
+			// printf("func accept_timeout() timeout err:%d \n", ret);
 			m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, connfd, "func acceptConn() TimeOutError");
 		}
 		else
@@ -113,9 +109,9 @@ int TcpServer::acceptTimeout(int wait_seconds)
 		}
 	}
 
-	//一但检测出 有select事件发生，表示对等方完成了三次握手，客户端有新连接建立
-	//此时再调用accept将不会堵塞
-	ret = accept(m_lfd, (struct sockaddr*)&m_addrCli, &addrlen); //返回已连接套接字
+	// 一但检测出 有select事件发生，表示对等方完成了三次握手，客户端有新连接建立
+	// 此时再调用accept将不会堵塞
+	ret = accept(m_lfd, (struct sockaddr *)&m_addrCli, &addrlen); // 返回已连接套接字
 	if (ret == -1)
 	{
 		ret = errno;
@@ -123,9 +119,6 @@ int TcpServer::acceptTimeout(int wait_seconds)
 
 		return ret;
 	}
-
-
-
 
 	return ret;
 }

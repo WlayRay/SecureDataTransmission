@@ -22,7 +22,7 @@ RespondCodec::~RespondCodec()
 	cout << "RespondCodec destruct ..." << endl;
 }
 
-int RespondCodec::msgEncode(char** outData, int &len)
+int RespondCodec::msgEncode(char **outData, int &len)
 {
 	writeHeadNode(m_msg.rv);
 	writeNextNode(m_msg.clientId, strlen(m_msg.clientId) + 1);
@@ -34,9 +34,9 @@ int RespondCodec::msgEncode(char** outData, int &len)
 	return 0;
 }
 
-void* RespondCodec::msgDecode(char * inData, int inLen)
+void *RespondCodec::msgDecode(char *inData, int inLen)
 {
-	unpackSequence((char*)inData, inLen);
+	unpackSequence((char *)inData, inLen);
 	readHeadNode(m_msg.rv);
 	readNextNode(m_msg.clientId);
 	readNextNode(m_msg.serverId);

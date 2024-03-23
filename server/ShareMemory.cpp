@@ -19,14 +19,14 @@ ShareMemory::ShareMemory(int key, int size)
 }
 
 // 通过路径打开共享内存
-ShareMemory::ShareMemory(const char * name)
+ShareMemory::ShareMemory(const char *name)
 {
 	key_t key = ftok(name, RandX);
 	getShmID(key, 0, 0);
 }
 
 // 通过路径创建/打开共享内存
-ShareMemory::ShareMemory(const char * name, int size)
+ShareMemory::ShareMemory(const char *name, int size)
 {
 	key_t key = ftok(name, RandX);
 	// 创建共享内存
@@ -37,11 +37,11 @@ ShareMemory::~ShareMemory()
 {
 }
 
-void * ShareMemory::mapShm()
+void *ShareMemory::mapShm()
 {
 	// 关联当前进程和共享内存
 	m_shmAddr = shmat(m_shmID, NULL, 0);
-	if (m_shmAddr == (void*)-1)
+	if (m_shmAddr == (void *)-1)
 	{
 		return NULL;
 	}
@@ -71,7 +71,7 @@ int ShareMemory::getShmID(key_t key, int shmSize, int flag)
 	// 共享内存地址初始化
 	if (shmSize > 0)
 	{
-		void* addr = shmat(m_shmID, NULL, 0);
+		void *addr = shmat(m_shmID, NULL, 0);
 		memset(addr, 0, shmSize);
 		shmdt(addr);
 	}

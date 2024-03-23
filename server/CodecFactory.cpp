@@ -4,12 +4,11 @@ CodecFactory::CodecFactory()
 {
 }
 
-
 CodecFactory::~CodecFactory()
 {
 }
 
-Codec* CodecFactory::createCodec()
+Codec *CodecFactory::createCodec()
 {
 	return NULL;
 }

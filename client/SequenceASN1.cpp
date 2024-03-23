@@ -12,7 +12,7 @@ int SequenceASN1::writeHeadNode(int iValue)
 	return 0;
 }
 
-int SequenceASN1::writeHeadNode(char * sValue, int len)
+int SequenceASN1::writeHeadNode(char *sValue, int len)
 {
 	EncodeChar(sValue, len, &m_header);
 	m_next = m_header;
@@ -28,7 +28,7 @@ int SequenceASN1::writeNextNode(int iValue)
 	return 0;
 }
 
-int SequenceASN1::writeNextNode(char * sValue, int len)
+int SequenceASN1::writeNextNode(char *sValue, int len)
 {
 	EncodeChar(sValue, len, &m_next->next);
 	m_next = m_next->next;
@@ -36,14 +36,14 @@ int SequenceASN1::writeNextNode(char * sValue, int len)
 	return 0;
 }
 
-int SequenceASN1::readHeadNode(int & iValue)
+int SequenceASN1::readHeadNode(int &iValue)
 {
 	DER_ItAsn1_ReadInteger(m_header, (ITCAST_UINT32 *)&iValue);
 	m_next = m_header->next;
 	return 0;
 }
 
-int SequenceASN1::readHeadNode(char * sValue)
+int SequenceASN1::readHeadNode(char *sValue)
 {
 	DER_ItAsn1_ReadPrintableString(m_header, &m_temp);
 	memcpy(sValue, m_temp->pData, m_temp->dataLen);
@@ -52,14 +52,14 @@ int SequenceASN1::readHeadNode(char * sValue)
 	return 0;
 }
 
-int SequenceASN1::readNextNode(int & iValue)
+int SequenceASN1::readNextNode(int &iValue)
 {
 	DER_ItAsn1_ReadInteger(m_next, (ITCAST_UINT32 *)&iValue);
 	m_next = m_next->next;
 	return 0;
 }
 
-int SequenceASN1::readNextNode(char * sValue)
+int SequenceASN1::readNextNode(char *sValue)
 {
 	DER_ItAsn1_ReadPrintableString(m_next, &m_temp);
 	memcpy(sValue, m_temp->pData, m_temp->dataLen);
@@ -68,20 +68,20 @@ int SequenceASN1::readNextNode(char * sValue)
 	return 0;
 }
 
-int SequenceASN1::packSequence(char ** outData, int & outLen)
+int SequenceASN1::packSequence(char **outData, int &outLen)
 {
 	DER_ItAsn1_WriteSequence(m_header, &m_temp);
-	//传输参数赋值
+	// 传输参数赋值
 	*outData = (char *)m_temp->pData;
 	outLen = m_temp->dataLen;
 
-	//释放整个链表
+	// 释放整个链表
 	DER_ITCAST_FreeQueue(m_header);
 
 	return 0;
 }
 
-int SequenceASN1::unpackSequence(char * inData, int inLen)
+int SequenceASN1::unpackSequence(char *inData, int inLen)
 {
 	DER_ITCAST_String_To_AnyBuf(&m_temp, (unsigned char *)inData, inLen);
 	DER_ItAsn1_ReadSequence(m_temp, &m_header);
@@ -90,7 +90,6 @@ int SequenceASN1::unpackSequence(char * inData, int inLen)
 	return 0;
 }
 
-void SequenceASN1::freeSequence(ITCAST_ANYBUF * node)
+void SequenceASN1::freeSequence(ITCAST_ANYBUF *node)
 {
-
 }

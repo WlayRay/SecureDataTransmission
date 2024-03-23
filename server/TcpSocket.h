@@ -7,22 +7,28 @@ static const int TIMEOUT = 1000;
 class TcpSocket
 {
 public:
-	enum ErrorType {ParamError = 3001, TimeoutError, PeerCloseError, MallocError};
+	enum ErrorType
+	{
+		ParamError = 3001,
+		TimeoutError,
+		PeerCloseError,
+		MallocError
+	};
 	TcpSocket();
 	// 使用一个可以用于通信的套接字实例化套接字对象
 	TcpSocket(int connfd);
 	~TcpSocket();
 
 	// 连接服务器
-	int connectToHost(char* ip, unsigned short port, int timeout = TIMEOUT);
+	int connectToHost(char *ip, unsigned short port, int timeout = TIMEOUT);
 	// 发送数据
-	int sendMsg(char* sendData, int dataLen, int timeout = TIMEOUT);
+	int sendMsg(char *sendData, int dataLen, int timeout = TIMEOUT);
 	// 接收数据
-	int recvMsg(char** recvData, int &recvLen, int timeout = TIMEOUT);
+	int recvMsg(char **recvData, int &recvLen, int timeout = TIMEOUT);
 	// 断开连接
 	void disConnect();
 	// 释放内存
-	void freeMemory(char** buf);
+	void freeMemory(char **buf);
 
 private:
 	// 设置I/O为非阻塞模式
@@ -41,7 +47,6 @@ private:
 	int writen(const void *buf, int count);
 
 private:
-	int m_socket;		// 用于通信的套接字
-	ItcastLog m_log;	// log对象
+	int m_socket;	 // 用于通信的套接字
+	ItcastLog m_log; // log对象
 };
-

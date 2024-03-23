@@ -5,7 +5,7 @@ RespondFactory::RespondFactory()
 	m_flag = false;
 }
 
-RespondFactory::RespondFactory(RespondMsg * msg)
+RespondFactory::RespondFactory(RespondMsg *msg)
 {
 	m_flag = true;
 	m_respond = msg;
@@ -15,7 +15,7 @@ RespondFactory::~RespondFactory()
 {
 }
 
-Codec * RespondFactory::createCodec()
+Codec *RespondFactory::createCodec()
 {
 	if (m_flag)
 	{
