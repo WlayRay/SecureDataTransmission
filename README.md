@@ -1,5 +1,5 @@
 # Secure_Data_Transmission
-基于openssl的安全传输平台
+数据安全传输平台
 
 #### 1.本项目部署在Linux平台上，当然也可以部署在Windows（当前源码暂不支持，需要修改源码，替换相应的win平台的库文件和api）平台上，但是应当自行添加openSSL的库文件以及protobuf库。
 
