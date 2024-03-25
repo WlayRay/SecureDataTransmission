@@ -2,7 +2,7 @@
 #include "TcpSocket.h"
 #include "SecKeyShm.h"
 #include "TcpServer.h"
-#include "RequestCodec.h"
+#include "ServerRequestCodec.h"
 #include "seckeymodel.h"
 #include "db.h"
 #include <map>

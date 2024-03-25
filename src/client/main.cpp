@@ -1,8 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
-#include "RequestCodec.h"
-#include "RespondCodec.h"
+#include "ClientRequestCodec.h"
+#include "ClientRespondCodec.h"
 #include "RequestFactory.h"
 #include "RespondFactory.h"
 #include "ClientOperation.h"

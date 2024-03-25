@@ -1,6 +1,6 @@
 #pragma once
 #include "CodecFactory.h"
-#include "RespondCodec.h"
+#include "ClientRespondCodec.h"
 
 class RespondFactory : public CodecFactory
 {
