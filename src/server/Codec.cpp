@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-Codec::Codec() : SequenceASN1()
+Codec::Codec() 
 {
 }
 

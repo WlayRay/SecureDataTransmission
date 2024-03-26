@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "TcpSocket.h"
-#include "SecKeyShm.h"
+#include "ServerSecKeyShm.h"
 #include "TcpServer.h"
 #include "ServerRequestCodec.h"
 #include "seckeymodel.h"

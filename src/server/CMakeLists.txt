@@ -4,6 +4,7 @@ aux_source_directory(. SRC_LIST)
 # 配置头文件的搜索路径  
 include_directories(  
     "${CMAKE_SOURCE_DIR}/include"  
+    "${CMAKE_SOURCE_DIR}/include/common"  
     "${CMAKE_SOURCE_DIR}/include/server"   
     "${CMAKE_SOURCE_DIR}/proto" 
 )  

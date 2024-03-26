@@ -1,4 +1,5 @@
 #include "Codec.h"
+#include <cstddef>
 
 Codec::Codec()
 {

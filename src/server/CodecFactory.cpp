@@ -10,5 +10,5 @@ CodecFactory::~CodecFactory()
 
 Codec *CodecFactory::createCodec()
 {
-	return NULL;
+	return nullptr;
 }

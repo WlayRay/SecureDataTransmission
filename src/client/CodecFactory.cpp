@@ -1,4 +1,5 @@
 #include "CodecFactory.h"
+#include <cstddef>
 
 CodecFactory::CodecFactory()
 {

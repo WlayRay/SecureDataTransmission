@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "TcpSocket.h"
-#include "SecKeyShm.h"
+#include "ClientSecKeyShm.h"
 
 class ClientInfo
 {

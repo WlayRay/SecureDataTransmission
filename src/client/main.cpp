@@ -3,8 +3,8 @@
 #include <iostream>
 #include "ClientRequestCodec.h"
 #include "ClientRespondCodec.h"
-#include "RequestFactory.h"
-#include "RespondFactory.h"
+#include "ClientRequestFactory.h"
+#include "ClientRespondFactory.h"
 #include "ClientOperation.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>

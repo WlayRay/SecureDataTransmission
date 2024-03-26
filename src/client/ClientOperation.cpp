@@ -5,8 +5,8 @@
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include "CodecFactory.h"
-#include "RequestFactory.h"
-#include "RespondFactory.h"
+#include "ClientRequestFactory.h"
+#include "ClientRespondFactory.h"
 
 using namespace std;
 
