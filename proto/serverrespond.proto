@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message ServerRespond{
+    int32 rv = 1;
+    string clientid = 2;
+    string serverid = 3;
+    string r2 = 4;
+    int32 seckeyid = 5;
+}
