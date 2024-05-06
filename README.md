@@ -1,5 +1,4 @@
-# Secure_Data_Transmission
-数据安全传输平台
+# 数据安全传输平台
 
 #### 1.本项目部署在Linux平台上，使用到openSSL的库以及protobuf库。
 
