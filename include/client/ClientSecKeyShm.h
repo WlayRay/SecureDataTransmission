@@ -23,7 +23,7 @@ public:
 	int shmWrite(NodeSHMInfo *pNodeInfo);
 	int shmRead(const char *clientID, const char *serverID, NodeSHMInfo *pNodeInfo);
 
-	// for test
+	// 测试函数
 	void printShm();
 
 private:

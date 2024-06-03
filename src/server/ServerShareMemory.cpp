@@ -33,9 +33,7 @@ ShareMemory::ShareMemory(const char *name, int size)
 	getShmID(key, size, IPC_CREAT | 0664);
 }
 
-ShareMemory::~ShareMemory()
-{
-}
+ShareMemory::~ShareMemory() {}
 
 void *ShareMemory::mapShm()
 {

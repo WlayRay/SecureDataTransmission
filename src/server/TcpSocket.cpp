@@ -174,14 +174,12 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 	ret = readn(&netdatalen, 4); // 读包头 4个字节
 	if (ret == -1)
 	{
-		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err");
 		return ret;
 	}
 	else if (ret < 4)
 	{
 		ret = PeerCloseError;
-		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err, peer closed");
 		return ret;
 	}
@@ -199,14 +197,12 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 	ret = readn(tmpBuf, n); // 根据长度读数据
 	if (ret == -1)
 	{
-		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "readn() err");
 		return ret;
 	}
 	else if (ret < n)
 	{
 		ret = PeerCloseError;
-		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err,  peer closed");
 		return ret;
 	}

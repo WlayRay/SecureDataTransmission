@@ -3,27 +3,17 @@
 #include <iostream>
 using namespace std;
 
-SecKeyShm::SecKeyShm(int key) : ShareMemory(key)
-{
-}
+SecKeyShm::SecKeyShm(int key) : ShareMemory(key) {}
 
 SecKeyShm::SecKeyShm(int key, int maxNode)
-	: ShareMemory(key, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode)
-{
-}
+	: ShareMemory(key, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode) {}
 
-SecKeyShm::SecKeyShm(const char *pathName) : ShareMemory(pathName)
-{
-}
+SecKeyShm::SecKeyShm(const char *pathName) : ShareMemory(pathName) {}
 
 SecKeyShm::SecKeyShm(const char *pathName, int maxNode)
-	: ShareMemory(pathName, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode)
-{
-}
+	: ShareMemory(pathName, maxNode * sizeof(NodeSHMInfo)), m_maxNode(maxNode) {}
 
-SecKeyShm::~SecKeyShm()
-{
-}
+SecKeyShm::~SecKeyShm() {}
 
 int SecKeyShm::shmWrite(NodeSHMInfo *pNodeInfo)
 {

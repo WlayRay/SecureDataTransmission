@@ -53,7 +53,6 @@ int TcpSocket::connectToHost(char *ip, unsigned short port, int timeout)
 		}
 		else
 		{
-			// printf("func connect_timeout() err:  %d\n", ret);
 			m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func connect_timeout() err");
 		}
 	}
@@ -98,7 +97,7 @@ int TcpSocket::sendMsg(char *sendData, int dataLen, int timeout)
 			return writed;
 		}
 
-		if (netdata != NULL) // wangbaoming 20150630 modify bug
+		if (netdata != NULL) 
 		{
 			free(netdata);
 			netdata = NULL;
@@ -131,7 +130,7 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 		return ret;
 	}
 
-	ret = readTimeout(timeout); // bugs modify bombing
+	ret = readTimeout(timeout); 
 	if (ret != 0)
 	{
 		if (ret == -1 || errno == ETIMEDOUT)
@@ -151,14 +150,12 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 	ret = readn(&netdatalen, 4); // 读包头 4个字节
 	if (ret == -1)
 	{
-		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err");
 		return ret;
 	}
 	else if (ret < 4)
 	{
 		ret = PeerCloseError;
-		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err, peer closed");
 		return ret;
 	}
@@ -176,14 +173,12 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 	ret = readn(tmpBuf, n); // 根据长度读数据
 	if (ret == -1)
 	{
-		// printf("func readn() err:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "readn() err");
 		return ret;
 	}
 	else if (ret < n)
 	{
 		ret = PeerCloseError;
-		// printf("func readn() err peer closed:%d \n", ret);
 		m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, ret, "func readn() err,  peer closed");
 		return ret;
 	}
@@ -212,9 +207,6 @@ void TcpSocket::freeMemory(char **buf)
 	}
 }
 
-/////////////////////////////////////////////////
-//////             子函数                   //////
-/////////////////////////////////////////////////
 /*
  * blockIO - 设置I/O为非阻塞模式
  * @fd: 文件描符符

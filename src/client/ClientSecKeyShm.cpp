@@ -127,7 +127,7 @@ int SecKeyShm::shmRead(const char *clientID, const char *serverID, NodeSHMInfo *
 			break;
 		}
 	}
-	cout << "i==" << i << endl;
+	// cout << "i==" << i << endl;
 
 	// 没有空间可用
 	if (i == m_maxNode)

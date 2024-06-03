@@ -61,7 +61,6 @@ TcpSocket *TcpServer::acceptConn(int timeout)
 	{
 		if (connfd == -1 && errno == ETIMEDOUT)
 		{
-			// printf("func accept_timeout() timeout err:%d \n", ret);
 			m_log.Log(__FILE__, __LINE__, ItcastLog::ERROR, connfd, "func acceptConn() TimeOutError");
 		}
 		else

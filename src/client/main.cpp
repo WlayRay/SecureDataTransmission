@@ -34,7 +34,6 @@ int main()
 		case RequestCodec::NewOrUpdate:
 			client.secKeyAgree();
 			break;
-
 		case RequestCodec::Check:
 			client.secKeyCheck();
 			break;
