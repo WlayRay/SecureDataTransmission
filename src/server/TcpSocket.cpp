@@ -13,17 +13,33 @@
 #include <string.h>
 #include <stdlib.h>
 
-TcpSocket::TcpSocket()
-{
-}
+TcpSocket::TcpSocket() : epoll_fd(-1) {}
 
-TcpSocket::TcpSocket(int connfd)
+TcpSocket::TcpSocket(int connfd) : m_socket(connfd), epoll_fd(-1)
 {
-	m_socket = connfd;
+	epoll_fd = epoll_create1(0);
+	if (epoll_fd == -1)
+	{
+		perror("epoll_create1");
+		exit(EXIT_FAILURE);
+	}
+
+	struct epoll_event ev;
+	ev.events = EPOLLIN;
+	ev.data.fd = m_socket;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, m_socket, &ev) == -1)
+	{
+		perror("epoll_ctl");
+		exit(EXIT_FAILURE);
+	}
 }
 
 TcpSocket::~TcpSocket()
 {
+	if (epoll_fd != -1)
+	{
+		close(epoll_fd);
+	}
 }
 
 int TcpSocket::connectToHost(char *ip, unsigned short port, int timeout)
@@ -105,7 +121,7 @@ int TcpSocket::sendMsg(char *sendData, int dataLen, int timeout)
 			return writed;
 		}
 
-		if (netdata != NULL) // wangbaoming 20150630 modify bug
+		if (netdata != NULL)
 		{
 			free(netdata);
 			netdata = NULL;
@@ -138,7 +154,7 @@ int TcpSocket::recvMsg(char **recvData, int &recvLen, int timeout)
 		return ret;
 	}
 
-	ret = readTimeout(timeout); // bugs modify bombing
+	ret = readTimeout(timeout);
 	if (ret != 0)
 	{
 		if (ret == -1 || errno == ETIMEDOUT)
@@ -219,9 +235,6 @@ void TcpSocket::freeMemory(char **buf)
 	}
 }
 
-/////////////////////////////////////////////////
-//////             子函数                   //////
-/////////////////////////////////////////////////
 /*
  * blockIO - 设置I/O为非阻塞模式
  * @fd: 文件描符符
@@ -282,36 +295,63 @@ int TcpSocket::readTimeout(unsigned int wait_seconds)
 	int ret = 0;
 	if (wait_seconds > 0)
 	{
-		fd_set read_fdset;
-		struct timeval timeout;
-
-		FD_ZERO(&read_fdset);
-		FD_SET(m_socket, &read_fdset);
-
-		timeout.tv_sec = wait_seconds;
-		timeout.tv_usec = 0;
-
-		// select返回值三态
-		// 1 若timeout时间到（超时），没有检测到读事件 ret返回=0
-		// 2 若ret返回<0 &&  errno == EINTR 说明select的过程中被别的信号中断（可中断睡眠原理）
-		// 2-1 若返回-1，select出错
-		// 3 若ret返回值>0 表示有read事件发生，返回事件发生的个数
-
+		struct epoll_event event;
+		event.events = EPOLLIN | EPOLLERR;
+		event.data.fd = m_socket;
+		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, m_socket, &event) == -1)
+		{
+			perror("epoll_ctl");
+		}
+		int num_events;
 		do
 		{
-			ret = select(m_socket + 1, &read_fdset, NULL, NULL, &timeout);
+			num_events = epoll_wait(epoll_fd, events, MAX_EVENTS, wait_seconds * 1000);
+		} while (num_events < 0 && errno == EINTR);
 
-		} while (ret < 0 && errno == EINTR);
-
-		if (ret == 0)
+		if (num_events == 0)
 		{
 			ret = -1;
 			errno = ETIMEDOUT;
 		}
-		else if (ret == 1)
+		else if ((events[0].events & EPOLLIN) && !(events[0].events & EPOLLERR))
+		{
 			ret = 0;
-	}
+		}
 
+		if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, m_socket, NULL) == -1)
+		{
+			perror("epoll_ctl");
+		}
+
+		// fd_set read_fdset;
+		// struct timeval timeout;
+
+		// FD_ZERO(&read_fdset);
+		// FD_SET(m_socket, &read_fdset);
+
+		// timeout.tv_sec = wait_seconds;
+		// timeout.tv_usec = 0;
+
+		// // select返回值三态
+		// // 1 若timeout时间到（超时），没有检测到读事件 ret返回=0
+		// // 2 若ret返回<0 &&  errno == EINTR 说明select的过程中被别的信号中断（可中断睡眠原理）
+		// // 2-1 若返回-1，select出错
+		// // 3 若ret返回值>0 表示有read事件发生，返回事件发生的个数
+
+		// do
+		// {
+		// 	ret = select(m_socket + 1, &read_fdset, NULL, NULL, &timeout);
+
+		// } while (ret < 0 && errno == EINTR);
+
+		// if (ret == 0)
+		// {
+		// 	ret = -1;
+		// 	errno = ETIMEDOUT;
+		// }
+		// else if (ret == 1)
+		// 	ret = 0;
+	}
 	return ret;
 }
 
@@ -325,26 +365,54 @@ int TcpSocket::writeTimeout(unsigned int wait_seconds)
 	int ret = 0;
 	if (wait_seconds > 0)
 	{
-		fd_set write_fdset;
-		struct timeval timeout;
-
-		FD_ZERO(&write_fdset);
-		FD_SET(m_socket, &write_fdset);
-
-		timeout.tv_sec = wait_seconds;
-		timeout.tv_usec = 0;
+		struct epoll_event event;
+		event.events = EPOLLOUT | EPOLLERR;
+		event.data.fd = m_socket;
+		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, m_socket, &event) == -1)
+		{
+			perror("epoll_ctl");
+		}
+		int num_events;
 		do
 		{
-			ret = select(m_socket + 1, NULL, &write_fdset, NULL, &timeout);
-		} while (ret < 0 && errno == EINTR);
+			num_events = epoll_wait(epoll_fd, events, MAX_EVENTS, wait_seconds * 1000);
+		} while (num_events < 0 && errno == EINTR);
 
-		if (ret == 0)
+		if (num_events == 0)
 		{
 			ret = -1;
 			errno = ETIMEDOUT;
 		}
-		else if (ret == 1)
+		else if ((events[0].events & EPOLLOUT) && !(events[0].events & EPOLLERR))
+		{
 			ret = 0;
+		}
+
+		if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, m_socket, NULL) == -1)
+		{
+			perror("epoll_ctl");
+		}
+
+		// fd_set write_fdset;
+		// struct timeval timeout;
+
+		// FD_ZERO(&write_fdset);
+		// FD_SET(m_socket, &write_fdset);
+
+		// timeout.tv_sec = wait_seconds;
+		// timeout.tv_usec = 0;
+		// do
+		// {
+		// 	ret = select(m_socket + 1, NULL, &write_fdset, NULL, &timeout);
+		// } while (ret < 0 && errno == EINTR);
+
+		// if (ret == 0)
+		// {
+		// 	ret = -1;
+		// 	errno = ETIMEDOUT;
+		// }
+		// else if (ret == 1)
+		// 	ret = 0;
 	}
 
 	return ret;
@@ -367,7 +435,6 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 	ret = connect(m_socket, (struct sockaddr *)addr, addrlen);
 	if (ret < 0 && errno == EINPROGRESS)
 	{
-		// printf("11111111111111111111\n");
 		fd_set connect_fdset;
 		struct timeval timeout;
 		FD_ZERO(&connect_fdset);
@@ -388,7 +455,6 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			return -1;
 		else if (ret == 1)
 		{
-			// printf("22222222222222222\n");
 			/* ret返回为1（表示套接字可写），可能有两种情况，一种是连接建立成功，一种是套接字产生错误，*/
 			/* 此时错误信息不会保存至errno变量中，因此，需要调用getsockopt来获取。 */
 			int err;
@@ -400,12 +466,10 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			}
 			if (err == 0)
 			{
-				// printf("3333333333333\n");
 				ret = 0;
 			}
 			else
 			{
-				// printf("4444444444444444:%d\n", err);
 				errno = err;
 				ret = -1;
 			}

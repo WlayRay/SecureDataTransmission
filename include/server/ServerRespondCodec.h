@@ -8,7 +8,7 @@ struct RespondMsg
 	char clientId[12]; // 客户端编号
 	char serverId[12]; // 服务器编号
 	char r2[64];	   // 服务器端随机数
-	int seckeyid;	   // 对称密钥编号    keysn
+	int seckeyid;	   // 对称密钥编号   
 	RespondMsg() {}
 	RespondMsg(char *clientID, char *serverID, char *r2, int rv, int seckeyID)
 	{

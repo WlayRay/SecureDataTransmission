@@ -13,18 +13,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-TcpSocket::TcpSocket()
-{
-}
+TcpSocket::TcpSocket() {}
 
-TcpSocket::TcpSocket(int connfd)
-{
-	m_socket = connfd;
-}
+TcpSocket::TcpSocket(int connfd) : m_socket(connfd) {}
 
-TcpSocket::~TcpSocket()
-{
-}
+TcpSocket::~TcpSocket() {}
 
 int TcpSocket::connectToHost(char *ip, unsigned short port, int timeout)
 {
@@ -311,7 +304,6 @@ int TcpSocket::readTimeout(unsigned int wait_seconds)
 		else if (ret == 1)
 			ret = 0;
 	}
-
 	return ret;
 }
 
@@ -367,7 +359,6 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 	ret = connect(m_socket, (struct sockaddr *)addr, addrlen);
 	if (ret < 0 && errno == EINPROGRESS)
 	{
-		// printf("11111111111111111111\n");
 		fd_set connect_fdset;
 		struct timeval timeout;
 		FD_ZERO(&connect_fdset);
@@ -388,7 +379,6 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			return -1;
 		else if (ret == 1)
 		{
-			// printf("22222222222222222\n");
 			/* ret返回为1（表示套接字可写），可能有两种情况，一种是连接建立成功，一种是套接字产生错误，*/
 			/* 此时错误信息不会保存至errno变量中，因此，需要调用getsockopt来获取。 */
 			int err;
@@ -400,12 +390,10 @@ int TcpSocket::connectTimeout(sockaddr_in *addr, unsigned int wait_seconds)
 			}
 			if (err == 0)
 			{
-				// printf("3333333333333\n");
 				ret = 0;
 			}
 			else
 			{
-				// printf("4444444444444444:%d\n", err);
 				errno = err;
 				ret = -1;
 			}

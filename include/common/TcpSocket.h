@@ -1,9 +1,11 @@
 ﻿#pragma once
 #include "ItcastLog.h"
+#include "sys/epoll.h"
 
 /* 用于通信的套接字类 */
 // 超时的时间
 static const int TIMEOUT = 1000;
+const int MAX_EVENTS = 10; // epoll_event数组的最大值
 class TcpSocket
 {
 public:
@@ -47,6 +49,8 @@ private:
 	int writen(const void *buf, int count);
 
 private:
-	int m_socket;	 // 用于通信的套接字
-	ItcastLog m_log; // log对象
+	int m_socket;	   // 用于通信的套接字
+	int epoll_fd = -1; // 用于服务端检测连接和读写事件的epoll句柄
+	struct epoll_event events[MAX_EVENTS];
+	ItcastLog m_log;
 };

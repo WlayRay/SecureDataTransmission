@@ -16,7 +16,7 @@ public:
 	char dbSID[24];	   // 数据库sid
 
 	unsigned short sPort; // 服务器绑定的端口
-	int maxnode;		  // 共享内存最大网点树 客户端默认1个
+	int maxnode;		  // 共享内存最大节点数 客户端默认1个
 	int shmkey;			  // 共享内存keyid 创建共享内存时使用
 };
 
@@ -53,7 +53,6 @@ private:
 	SecKeyModel m_secKeyModel;
 	std::map<pthread_t, TcpSocket *> m_listSocket;
 	static bool m_stop;
-	// OCCIOP m_occi;
 };
 
 void *wroking(void *arg);

@@ -16,12 +16,6 @@ ServerOperation::ServerOperation(ServerInfo *info)
 	memcpy(&m_info, info, sizeof(ServerInfo));
 	// 创建共享内存对象
 	m_shm = new SecKeyShm(info->shmkey, info->maxnode);
-	// 连接oracle数据库
-	// bool bl = m_occi.connectDB("SECMNG", "SECMNG", "192.168.10.145:1521/orcl");
-	// if (!bl)
-	// {
-	// 	cout << "数据库 Oracle 连接失败..." << endl;
-	// }
 }
 
 ServerOperation::~ServerOperation()
@@ -64,9 +58,6 @@ void ServerOperation::startWork()
 		// 线程分离, 子线程自己释放pcb
 		pthread_detach(pid);
 		// key, value插入到map容器
-		// https://cplusplus.com
-		// http://zh.cppreference.com
-		// m_listSocket.insert(pair<pthread_t, TcpSocket*>(pid, socket));
 		m_listSocket.insert(make_pair(pid, socket));
 	}
 }
@@ -89,7 +80,6 @@ int ServerOperation::secKeyAgree(RequestMsg *reqMsg, char **outData, int &outLen
 
 	// 2. 秘钥信息写入数据库
 	// 2.1 从数据库中秘钥编号
-	// resMsg.seckeyid = m_occi.getKeyID();
 	resMsg.seckeyid = m_secKeyModel.getKeyID();
 	NodeSHMInfo shmInfo;
 	shmInfo.status = 1;
@@ -98,13 +88,6 @@ int ServerOperation::secKeyAgree(RequestMsg *reqMsg, char **outData, int &outLen
 	strcpy(shmInfo.seckey, key);
 	strcpy(shmInfo.serverID, m_info.serverID);
 	// 2.2 秘钥写入数据库
-	// bool bl = m_occi.writeSecKey(&shmInfo);
-	// if (!bl)
-	// {
-	// 	cout << "写秘钥失败..." << endl;
-	// }
-	// cout << "写秘钥完成..." << endl;
-
 	bool bl = m_secKeyModel.writeSecKey(&shmInfo);
 	if (!bl)
 	{

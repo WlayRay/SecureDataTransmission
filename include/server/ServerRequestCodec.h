@@ -3,8 +3,7 @@
 #include "serverrequest.pb.h"
 struct RequestMsg
 {
-	// 1 密钥协商  	//2 密钥校验; 	// 3 密钥注销
-	int cmdType;			 // 报文类型
+	int cmdType;			 // 报文类型: 1 密钥协商; 2 密钥校验; 3 密钥注销
 	char clientId[12] = {0}; // 客户端编号
 	char authCode[65] = {0}; // 认证码
 	char serverId[12] = {0}; // 服务器端编号

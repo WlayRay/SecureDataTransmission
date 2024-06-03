@@ -35,6 +35,13 @@ int RespondCodec::msgEncode(char **outData, int &len)
 		cerr << "序列化数据失败！";
 		return -1;
 	}
+
+	std::cout << std::endl << "----------------------------------------------------------------" << std::endl
+			  << std::endl;
+	std::cout << serializedData << std::endl
+			  << std::endl;
+	std::cout << "----------------------------------------------------------------" << std::endl;
+
 	len = serializedData.length();
 
 	// 分配内存并复制数据到输出指针
@@ -46,12 +53,6 @@ int RespondCodec::msgEncode(char **outData, int &len)
 		return -1;
 	}
 	memcpy(buffer.get(), serializedData.c_str(), len);
-
-	// std::cout << std::endl << "----------------------------------------------------------------" << std::endl
-	// 		  << std::endl;
-	// std::cout << serializedData << std::endl
-	// 		  << std::endl;
-	// std::cout << "----------------------------------------------------------------" << std::endl;
 
 	// 将unique_ptr的所有权转移给调用者
 	*outData = buffer.release();

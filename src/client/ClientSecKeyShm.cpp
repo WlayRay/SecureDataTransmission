@@ -87,7 +87,6 @@ int SecKeyShm::shmWrite(NodeSHMInfo *pNodeInfo)
 			}
 		}
 	}
-	// cout << "i==" << i << endl;
 
 	// 没有空间可用
 	if (i == m_maxNode)

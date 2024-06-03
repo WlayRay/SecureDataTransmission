@@ -5,13 +5,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-TcpServer::TcpServer()
-{
-}
+TcpServer::TcpServer() {}
 
-TcpServer::~TcpServer()
-{
-}
+TcpServer::~TcpServer() {}
 
 int TcpServer::setListen(unsigned short port)
 {
